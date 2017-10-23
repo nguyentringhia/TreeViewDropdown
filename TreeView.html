@@ -18,11 +18,12 @@
 
     <script type="text/javascript">
 
-    	
+    //	var itemSelected = "";
 
         function InitSearch(treeViewId, searchInputId, treeviewDropdownBtn) {
             var tv = $(treeViewId).data('kendoTreeView');
             var isFirstTime = true;
+
             $(searchInputId).on('keyup', function () {
             	$('#treeview').show();
                 $(treeViewId + ' li.k-item').show();
@@ -72,7 +73,10 @@
 
             $(searchInputId).on('blur', function () {
             	isFirstTime = false;
-            	$('#treeview').hide(); 
+            	$('#treeview').hide();
+           // 	if ($('#treeViewSearchInput').val() !== itemSelected) {
+			//		$('#treeViewSearchInput').val(itemSelected);
+            //	}
  //               if ($('#treeViewSearchInput').val() == '') {
    //                 //$('#treeview').hide();              
      //           } else {
@@ -115,7 +119,7 @@
 	                        { text: "SubItem 3.2.1" },
 		                        { text: "SubItem 3.2.2", items: [
 		                        { text: "SubItem 3.2.1" },
-		                        { text: "SubItem 3.2.2" }
+		                        { text: "SubItem 3.2.4" }
 	                    		]
 	                    	}
                     		]
@@ -127,9 +131,11 @@
                 select: onSelect,
 
                 dragAndDrop: true
-            }).data("kendoTreeView")
+            }).data("kendoTreeView");
 
-            $tv.expand(".k-item");
+            expandNextLevel();
+
+            //$tv.expand(".k-item");
 
             InitSearch("#treeview", "#treeViewSearchInput", "#treeviewDropdownBtn");
         });
@@ -138,6 +144,7 @@
             var item = this.dataItem(e.node);
             //alert("Selecting: " + this.text(e.node) + "ID:" + item.id);
             $('#lblselected').html("Selecting: " + this.text(e.node) + " & ID:" + item.id);
+       //     itemSelected = item.text;
             $('#treeview').hide();
             $('#treeViewSearchInput').val(item.text);
     		$('#treeViewSearchInput').blur();
@@ -150,6 +157,19 @@
             } else {
                 $('#treeview').show();
             }
+        }
+
+        function expandNextLevel() {
+        	setTimeout(function () {
+	            var treeview = $("#treeview").data("kendoTreeView");
+	            var b = $('.k-item .k-plus').length;
+	            treeview.expand(".k-item");
+	            treeview.trigger('dataBound');
+	            if (b > 0) {
+	                expandNextLevel();
+            	}
+
+        	}, 200);
         }
     </script>
     <style type="text/css" scoped>
